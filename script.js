@@ -1,51 +1,51 @@
-async function searchWord() {
-  const word = document.getElementById('wordInput').value.trim();
-  const meaningDiv = document.getElementById('meaning');
-  const roastDiv = document.getElementById('roast');
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const resultBox = document.getElementById("resultBox");
+const errorMsg = document.getElementById("error-msg");
+const loader = document.getElementById("loader");
+const botMsg = document.getElementById("bot-msg");
 
-  meaningDiv.classList.remove("hidden");
-  roastDiv.classList.remove("hidden");
+searchBtn.addEventListener("click", () => {
+  const word = searchInput.value.trim();
 
-  if (!word) {
-    meaningDiv.innerText = "😒 Arre bhai, word to daal!";
-    roastDiv.innerText = "Tere jaisa lazy user kam hi dekha! 😂";
+  if (word === "") {
+    botMsg.textContent = "Please type a word to search! 📘";
+    resultBox.innerHTML = "";
+    errorMsg.classList.add("hidden");
     return;
   }
 
-  meaningDiv.innerText = "⏳ Dhoondh raha hoon bhai... ruk jaa!";
-  roastDiv.innerText = "";
+  loader.classList.remove("hidden");
+  errorMsg.classList.add("hidden");
+  resultBox.innerHTML = "";
+  botMsg.textContent = "Searching the meaning for \"" + word + "\"...";
 
-  try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-    const data = await res.json();
+  fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+    .then((res) => res.json())
+    .then((data) => {
+      loader.classList.add("hidden");
 
-    if (Array.isArray(data)) {
-      const defList = data[0].meanings
-        .flatMap(meaning => meaning.definitions)
-        .map((d, i) => `👉 ${i + 1}. ${d.definition}`)
-        .slice(0, 3) // Top 3 meanings only
-        .join('\n');
+      if (!data[0] || !data[0].meanings) {
+        errorMsg.classList.remove("hidden");
+        botMsg.textContent = "Hmm... that word might be missing from our dictionary. 😅";
+        return;
+      }
 
-      meaningDiv.innerText = `🧐 Meanings of "${word}":\n${defList}`;
-      roastDiv.innerText = getFunnyRoast(word);
-    } else {
-      // No definitions found
-      meaningDiv.innerText = `😵 Sorry bro, "${word}" ka koi meaning nahi mila!`;
-      roastDiv.innerText = `"${word}" – Shayad tu naye shabd bana raha hai 😂`;
-    }
-  } catch (err) {
-    meaningDiv.innerText = "⚠️ Oops! Kuch toh gadbad hai network me.";
-    roastDiv.innerText = "Recharge kara lo bhai, data khatam ho gaya kya? 😅";
-  }
-}
+      const meaningData = data[0].meanings[0];
+      const definition = meaningData.definitions[0].definition;
+      const partOfSpeech = meaningData.partOfSpeech;
 
-function getFunnyRoast(word) {
-  const roasts = [
-    `"${word}" – Itna intelligent word? Tu padhai kab karta hai? 🤓`,
-    `"${word}" – Ye bolke interview clear ho jaayega shayad! 💼`,
-    `"${word}" – Dictionary me bhi dhoondte dhoondte thak gya hu 🥲`,
-    `"${word}" – Tujhse ye expect nahi tha bhai 😜`,
-    `"${word}" – Ye word sunke ChatGPT bhi hil gaya! 💀`
-  ];
-  return roasts[Math.floor(Math.random() * roasts.length)];
-}
+      resultBox.innerHTML = `
+        <h2 class="text-2xl font-bold mb-2 text-purple-700">${word}</h2>
+        <p class="italic text-sm text-gray-500">${partOfSpeech}</p>
+        <p class="mt-2 text-lg">${definition}</p>
+      `;
+
+      botMsg.textContent = "Here you go! Want to try another word? 😊";
+    })
+    .catch((error) => {
+      loader.classList.add("hidden");
+      errorMsg.classList.remove("hidden");
+      botMsg.textContent = "Something went wrong. Please try again later. 😢";
+    });
+});
