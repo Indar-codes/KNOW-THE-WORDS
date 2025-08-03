@@ -3,42 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cartoon Dictionary</title>
+  <title>Know the Words</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Comic+Neue&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Comic Neue', cursive;
-      background: linear-gradient(to bottom, #fcd34d, #fca5a5);
-    }
-    h1 {
-      font-family: 'Fredoka One', cursive;
-    }
-    .bubble {
-      background-color: #fff;
-      border-radius: 25px;
-      padding: 20px;
-      box-shadow: 5px 5px 0px #000;
-    }
-    .cartoon-cloud {
-      background: #fef9c3;
-      border: 2px dashed #f59e0b;
-      border-radius: 15px;
-      padding: 20px;
-    }
-  </style>
+  <script defer src="script.js"></script>
 </head>
-<body class="text-gray-800 flex flex-col items-center justify-center min-h-screen px-4">
-  <h1 class="text-5xl text-pink-600 mb-6">📚 Fun Dictionary Zone 🐣</h1>
+<body class="bg-gradient-to-b from-yellow-100 to-pink-100 min-h-screen p-4 font-sans">
+  <div class="max-w-xl mx-auto text-center">
+    <h1 class="text-4xl font-bold text-purple-700 mb-4">📚 Know the Words</h1>
+    <div class="flex items-center gap-3 justify-center mb-4">
+      <img src="bot.png" alt="Bot" class="w-12 h-12 rounded-full border-2 border-yellow-400" />
+      <p id="bot-msg" class="text-lg text-gray-700">Hi! Type any word below and I’ll fetch the meaning for you! 😊</p>
+    </div>
+    <input id="searchInput" type="text" placeholder="Enter a word..." class="w-full px-4 py-2 border border-purple-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" />
+    <button id="searchBtn" class="mt-4 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Search</button>
 
-  <div class="w-full max-w-md bubble">
-    <input id="wordInput" type="text" placeholder="Type a word, buddy!" class="p-3 rounded w-full border border-yellow-500 mb-4 text-lg" />
-    <button onclick="searchWord()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded w-full">🔍 Search-o-matic!</button>
+    <div id="loader" class="hidden mt-4 text-blue-600 font-semibold">⏳ Loading meaning...</div>
+    <p id="error-msg" class="text-red-500 text-xl mt-4 hidden">😕 Oops! Word not found. Try another one!</p>
+    
+    <div id="resultBox" class="mt-6 text-left bg-white p-4 rounded-lg shadow-md"></div>
   </div>
-
-  <div id="meaning" class="cartoon-cloud w-full max-w-md mt-6 text-center text-xl font-semibold hidden"></div>
-  <div id="roast" class="w-full max-w-md mt-3 text-center text-lg italic text-purple-700 hidden"></div>
-
-  <script src="script.js"></script>
 </body>
 </html>
